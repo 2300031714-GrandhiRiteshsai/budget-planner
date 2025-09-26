@@ -54,8 +54,8 @@ pipeline {
                 dir('frontend') {
                     // Remove existing ROOT folder
                     bat "rmdir /S /Q \"${env.TOMCAT_HOME}\\webapps\\ROOT\" || echo Not existing"
-                    // Copy React build to ROOT
-                    bat "xcopy build \"${env.TOMCAT_HOME}\\webapps\\ROOT\" /E /I /Y"
+                    // Copy Vite dist folder to ROOT
+                    bat "xcopy dist \"${env.TOMCAT_HOME}\\webapps\\ROOT\" /E /I /Y"
                 }
             }
         }
