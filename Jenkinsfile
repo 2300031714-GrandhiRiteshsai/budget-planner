@@ -27,9 +27,9 @@ pipeline {
 
         stage('Run Backend') {
             steps {
-                echo 'Starting backend...'
+                echo 'Starting backend on port 8081...'
                 dir('backend') {
-                    // Run Spring Boot backend in background
+                    // Ensure server.port=8081 is in application.properties
                     bat 'start cmd /c "java -jar target\\*.jar"'
                 }
             }
@@ -47,12 +47,10 @@ pipeline {
 
         stage('Run Frontend') {
             steps {
-                echo 'Starting frontend...'
+                echo 'Starting frontend on port 5173...'
                 dir('frontend') {
-                    // Option 1: Start React dev server (for development)
-                    bat 'start cmd /c "npm start"'
-                    // Option 2: Serve production build using "serve" (uncomment if needed)
-                    // bat 'npx serve -s build -l 3000'
+                    // Run Vite dev server on port 5173
+                    bat 'start cmd /c "npm run dev -- --port 5173"'
                 }
             }
         }
