@@ -49,16 +49,25 @@ pipeline {
             steps {
                 echo 'Deploying React frontend as ROOT...'
                 dir('frontend') {
-                    bat "rmdir /S /Q \"${env.TOMCAT_HOME}\\webapps\\ROOT\" || echo Not existing"
-                    bat "xcopy dist \"${env.TOMCAT_HOME}\\webapps\\ROOT\" /E /I /Y"
+                    // Remove existing ROOT safely
+                    bat "rmdir /S /Q \"${env.TOMCAT_HOME}\\webapps\\ROOT\" || echo ROOT not existing"
+                    // Copy new build to ROOT
+                    bat "xcopy /E /I /Y dist \"${env.TOMCAT_HOME}\\webapps\\ROOT\""
                 }
             }
         }
 
         stage('Start Tomcat') {
             steps {
+                echo 'Stopping any existing Tomcat...'
+                bat 'taskkill /F /IM java.exe || echo No java process running'
+
                 echo 'Starting Tomcat on port 9090...'
-                bat "start cmd /c \"${env.TOMCAT_HOME}\\bin\\startup.bat\""
+                dir("${env.TOMCAT_HOME}\\bin") {
+                    bat 'startup.bat'
+                }
+
+                echo 'Tomcat started successfully!'
             }
         }
     }
