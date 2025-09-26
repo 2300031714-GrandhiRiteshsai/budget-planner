@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
-        MAVEN_HOME = 'C:\\Program Files\\Apache\\apache-maven-3.9.4'
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-21'
+        MAVEN_HOME = 'C:\\Users\\rites\\Downloads\\Telegram Desktop\\apache-maven-3.9.9-bin\\apache-maven-3.9.9'
         NODE_HOME = 'C:\\Program Files\\nodejs'
-        PATH = "${env.JAVA_HOME}\\bin;${env.MAVEN_HOME}\\bin;${env.NODE_HOME};${env.PATH}"
+        PATH = "${env.MAVEN_HOME}\\bin;${env.NODE_HOME};${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
     stages {
@@ -18,47 +18,41 @@ pipeline {
 
         stage('Build Backend') {
             steps {
+                echo 'Building backend...'
                 dir('backend') {
-                    echo 'Building backend...'
-                    bat 'mvn clean package -DskipTests'
-                }
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                dir('frontend') {
-                    echo 'Installing frontend dependencies...'
-                    bat 'npm install'
-                    echo 'Building frontend...'
-                    bat 'npm run build'
+                    bat '"%MAVEN_HOME%\\bin\\mvn" clean package -DskipTests'
                 }
             }
         }
 
         stage('Run Backend') {
             steps {
+                echo 'Starting backend...'
                 dir('backend') {
-                    echo 'Starting backend...'
-                    bat 'start /B java -jar target\\budget-planner-backend-0.0.1-SNAPSHOT.jar > backend.log 2>&1'
+                    // Run Spring Boot backend in background
+                    bat 'start cmd /c "java -jar target\\*.jar"'
                 }
             }
         }
 
-        stage('Check Backend Health') {
+        stage('Build Frontend') {
             steps {
-                echo 'Waiting 10 seconds for backend to start...'
-                bat 'timeout /t 10 /nobreak'
-                echo 'Checking backend health...'
-                bat 'curl http://localhost:8081/actuator/health'
+                echo 'Building frontend...'
+                dir('frontend') {
+                    bat 'npm install'
+                    bat 'npm run build'
+                }
             }
         }
 
         stage('Run Frontend') {
             steps {
+                echo 'Starting frontend...'
                 dir('frontend') {
-                    echo 'Starting frontend...'
-                    bat 'start /B npm run preview > frontend.log 2>&1'
+                    // Option 1: Start React dev server (for development)
+                    bat 'start cmd /c "npm start"'
+                    // Option 2: Serve production build using "serve" (uncomment if needed)
+                    // bat 'npx serve -s build -l 3000'
                 }
             }
         }
@@ -66,13 +60,7 @@ pipeline {
 
     post {
         always {
-            echo 'CI/CD pipeline finished.'
-        }
-        success {
-            echo '✅ Build & deploy succeeded!'
-        }
-        failure {
-            echo '❌ Build or deploy failed — check logs!'
+            echo 'Pipeline finished.'
         }
     }
 }
