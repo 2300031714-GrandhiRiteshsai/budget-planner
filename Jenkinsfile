@@ -5,9 +5,6 @@ pipeline {
         JAVA_HOME = 'C:\\Program Files\\Java\\jdk-21'
         MAVEN_HOME = 'C:\\Users\\rites\\Downloads\\Telegram Desktop\\apache-maven-3.9.9-bin\\apache-maven-3.9.9'
         NODE_HOME = 'C:\\Program Files\\nodejs'
-        TOMCAT_HOME = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0'
-        TOMCAT_USER = 'admin'
-        TOMCAT_PASS = 'admin'
         PATH = "${env.MAVEN_HOME}\\bin;${env.NODE_HOME};${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
@@ -28,12 +25,12 @@ pipeline {
             }
         }
 
-        stage('Deploy Backend to Tomcat (/api)') {
+        stage('Run Backend') {
             steps {
-                echo 'Deploying backend WAR to Tomcat under /api...'
+                echo 'Starting backend...'
                 dir('backend') {
-                    // Copy WAR to Tomcat webapps as api.war
-                    bat "copy /Y target\\*.war \"${env.TOMCAT_HOME}\\webapps\\api.war\""
+                    // Run Spring Boot backend in background
+                    bat 'start cmd /c "java -jar target\\*.jar"'
                 }
             }
         }
@@ -48,22 +45,15 @@ pipeline {
             }
         }
 
-        stage('Deploy Frontend as ROOT') {
+        stage('Run Frontend') {
             steps {
-                echo 'Deploying React frontend as ROOT...'
+                echo 'Starting frontend...'
                 dir('frontend') {
-                    // Remove existing ROOT folder
-                    bat "rmdir /S /Q \"${env.TOMCAT_HOME}\\webapps\\ROOT\" || echo Not existing"
-                    // Copy Vite dist folder to ROOT
-                    bat "xcopy dist \"${env.TOMCAT_HOME}\\webapps\\ROOT\" /E /I /Y"
+                    // Option 1: Start React dev server (for development)
+                    bat 'start cmd /c "npm start"'
+                    // Option 2: Serve production build using "serve" (uncomment if needed)
+                    // bat 'npx serve -s build -l 3000'
                 }
-            }
-        }
-
-        stage('Start Tomcat') {
-            steps {
-                echo 'Starting Tomcat on port 9090...'
-                bat "start cmd /c \"${env.TOMCAT_HOME}\\bin\\startup.bat\""
             }
         }
     }
