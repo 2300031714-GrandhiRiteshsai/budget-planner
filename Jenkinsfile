@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo 'Deploying backend WAR to Tomcat under /api...'
                 dir('backend') {
-                    // Rename WAR to api.war
+                    // Copy WAR to Tomcat webapps as api.war
                     bat "copy /Y target\\*.war \"${env.TOMCAT_HOME}\\webapps\\api.war\""
                 }
             }
