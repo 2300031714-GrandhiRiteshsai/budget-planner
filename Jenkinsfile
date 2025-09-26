@@ -5,6 +5,9 @@ pipeline {
         JAVA_HOME = 'C:\\Program Files\\Java\\jdk-21'
         MAVEN_HOME = 'C:\\Users\\rites\\Downloads\\Telegram Desktop\\apache-maven-3.9.9-bin\\apache-maven-3.9.9'
         NODE_HOME = 'C:\\Program Files\\nodejs'
+        TOMCAT_HOME = 'C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0'
+        TOMCAT_USER = 'admin'
+        TOMCAT_PASS = 'admin'
         PATH = "${env.MAVEN_HOME}\\bin;${env.NODE_HOME};${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
@@ -25,12 +28,12 @@ pipeline {
             }
         }
 
-        stage('Run Backend') {
+        stage('Deploy Backend to Tomcat (/api)') {
             steps {
-                echo 'Starting backend on port 8081...'
+                echo 'Deploying backend WAR to Tomcat under /api...'
                 dir('backend') {
-                    // Ensure server.port=8081 is in application.properties
-                    bat 'start cmd /c "java -jar target\\*.jar"'
+                    // Rename WAR to api.war
+                    bat "copy /Y target\\*.war \"${env.TOMCAT_HOME}\\webapps\\api.war\""
                 }
             }
         }
@@ -45,13 +48,22 @@ pipeline {
             }
         }
 
-        stage('Run Frontend') {
+        stage('Deploy Frontend as ROOT') {
             steps {
-                echo 'Starting frontend on port 5173...'
+                echo 'Deploying React frontend as ROOT...'
                 dir('frontend') {
-                    // Run Vite dev server on port 5173
-                    bat 'start cmd /c "npm run dev -- --port 5173"'
+                    // Remove existing ROOT folder
+                    bat "rmdir /S /Q \"${env.TOMCAT_HOME}\\webapps\\ROOT\" || echo Not existing"
+                    // Copy React build to ROOT
+                    bat "xcopy build \"${env.TOMCAT_HOME}\\webapps\\ROOT\" /E /I /Y"
                 }
+            }
+        }
+
+        stage('Start Tomcat') {
+            steps {
+                echo 'Starting Tomcat on port 9090...'
+                bat "start cmd /c \"${env.TOMCAT_HOME}\\bin\\startup.bat\""
             }
         }
     }
