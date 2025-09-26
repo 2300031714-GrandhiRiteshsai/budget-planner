@@ -1,0 +1,26 @@
+package com.budgetplannerbackend.controller;
+
+import com.budgetplannerbackend.model.Income;
+import com.budgetplannerbackend.repository.IncomeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/incomes")
+@CrossOrigin(origins = "http://localhost:5173")
+public class IncomeController {
+
+    @Autowired
+    private IncomeRepository incomeRepository;
+
+    @PostMapping("/add")
+    public Income addIncome(@RequestBody Income income) {
+        return incomeRepository.save(income);
+    }
+
+    @GetMapping("/{userId}")
+    public List<Income> getIncomes(@PathVariable Long userId) {
+        return incomeRepository.findByUserId(userId);
+    }
+}

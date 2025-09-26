@@ -1,0 +1,5 @@
+package com.budgetplannerbackend.service;
+
+public class UserService {
+
+}

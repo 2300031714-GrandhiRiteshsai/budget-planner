@@ -1,0 +1,31 @@
+package com.budgetplanner.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "savings")
+public class SavingGoal {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String goalName;
+    private Double targetAmount;
+    private Double currentAmount;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getGoalName() { return goalName; }
+    public void setGoalName(String goalName) { this.goalName = goalName; }
+    public Double getTargetAmount() { return targetAmount; }
+    public void setTargetAmount(Double targetAmount) { this.targetAmount = targetAmount; }
+    public Double getCurrentAmount() { return currentAmount; }
+    public void setCurrentAmount(Double currentAmount) { this.currentAmount = currentAmount; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+}

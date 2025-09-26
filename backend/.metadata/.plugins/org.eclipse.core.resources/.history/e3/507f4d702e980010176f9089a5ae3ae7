@@ -1,0 +1,30 @@
+package com.budgetplannerbackend.controller;
+
+import com.budgetplannerbackend.model.SavingsGoal;
+import com.budgetplannerbackend.repository.SavingsGoalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/savings")
+@CrossOrigin(origins = "http://localhost:5173")
+public class SavingsController {
+
+    @Autowired
+    private SavingsGoalRepository savingsRepository;
+
+    @PostMapping("/add")
+    public ResponseEntity<SavingsGoal> addGoal(@RequestBody SavingsGoal goal) {
+        SavingsGoal saved = savingsRepository.save(goal);
+        return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<SavingsGoal>> getSavings(@PathVariable("userId") Long userId) {
+        List<SavingsGoal> goals = savingsRepository.findByUserId(userId);
+        return ResponseEntity.ok(goals);
+    }
+}

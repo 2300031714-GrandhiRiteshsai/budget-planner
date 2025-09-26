@@ -1,0 +1,11 @@
+/**
+ * 
+ */
+package com.budgetplannerbackend.model;
+
+/**
+ * 
+ */
+public class SavingGoal {
+
+}

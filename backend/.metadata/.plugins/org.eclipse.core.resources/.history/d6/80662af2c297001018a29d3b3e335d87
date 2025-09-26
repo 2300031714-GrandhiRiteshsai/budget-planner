@@ -1,0 +1,44 @@
+package com.budgetplannerbackend.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.budgetplannerbackend.model.User;
+import com.budgetplannerbackend.repository.UserRepository;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:5173")
+public class AuthController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user){
+        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+            return ResponseEntity.badRequest().body("Username already exists");
+        }
+        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+            return ResponseEntity.badRequest().body("Email already exists");
+        }
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.ok(new AuthResponse("dummy-token", savedUser));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user){
+        Optional<User> existing = userRepository.findByUsername(user.getUsername());
+        if(existing.isPresent() && existing.get().getPassword().equals(user.getPassword())){
+            return ResponseEntity.ok(new AuthResponse("dummy-token", existing.get()));
+        }
+        return ResponseEntity.status(401).body("Invalid credentials");
+    }
+
+    static class AuthResponse {
+        public String token;
+        public User user;
+        public AuthResponse(String token, User user){ this.token = token; this.user = user; }
+    }
+}

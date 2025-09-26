@@ -1,0 +1,45 @@
+package com.budgetplannerbackend.controller;
+
+import com.budgetplannerbackend.model.SavingsGoal;
+import com.budgetplannerbackend.model.SavingsGoal;
+import com.budgetplannerbackend.repository.SavingsGoalRepository;
+import com.budgetplannerbackend.repository.SavingsGoalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/savings")
+@CrossOrigin(origins = "http://localhost:5173")
+public class SavingsController {
+
+    @Autowired
+    private SavingsGoalRepository savingsRepository;
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addGoal(@RequestBody SavingsGoal goal) {
+        try {
+            CrudRepository<SavingsGoal, Long> savingsGoalRepository = null;
+			SavingsGoal saved = savingsGoalRepository.save(goal);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Failed to save savings goal: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getGoals(@PathVariable Long userId) {
+        try {
+            SavingsGoalRepository savingsGoalRepository = null;
+			List<SavingsGoal> goals = savingsGoalRepository.findByUserId(userId);
+            return ResponseEntity.ok(goals);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Failed to fetch savings goals: " + e.getMessage());
+        }
+    }
+}

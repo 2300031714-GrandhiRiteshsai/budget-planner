@@ -1,0 +1,5 @@
+package com.budgetplannerbackend.repository;
+
+public class SavingsGoalRepository {
+
+}

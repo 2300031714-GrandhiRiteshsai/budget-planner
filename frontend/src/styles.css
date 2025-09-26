@@ -1,0 +1,66 @@
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --accent: #2a7ae2;
+  --muted: #6b7280;
+  --success: #16a34a;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.container { width: 95%; max-width: 1100px; margin: 24px auto; }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #ffffff, #f8fafc);
+  padding: 12px 24px;
+  border-bottom: 1px solid #e6edf6;
+}
+.brand a { font-weight: 700; color: var(--accent); text-decoration: none; font-size: 1.25rem; }
+.nav-links a { margin-left: 12px; text-decoration: none; color: #374151; }
+.nav-links .btn-ghost { margin-left: 12px; background: transparent; border: 1px solid #e2e8f0; padding: 6px 10px; cursor: pointer; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.card { background: var(--card); padding: 16px; border-radius: 10px; box-shadow: 0 1px 4px rgba(13, 38, 63, 0.06); }
+.card.small { text-align: center; }
+.big { font-size: 1.5rem; font-weight: 700; margin: 8px 0; }
+
+.form-card { max-width: 520px; margin: 16px auto; }
+.form-card form { display: grid; gap: 10px; }
+label { font-size: 0.9rem; color: #374151; }
+input, select { padding: 10px; border-radius: 6px; border: 1px solid #e6eef8; outline: none; }
+input:focus, select:focus { box-shadow: 0 0 0 3px rgba(42,122,226,0.08); border-color: var(--accent); }
+
+.btn { background: var(--accent); color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.btn-ghost { background: transparent; border: 1px solid #e6eef8; padding: 8px 12px; cursor: pointer; border-radius: 8px; }
+
+.muted { color: var(--muted); }
+.table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.table th, .table td { text-align: left; padding: 8px; border-bottom: 1px dashed #eef2f7; }
+.chart-card { margin-top: 18px; padding: 18px; }
+
+.goal-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.goal-list li { padding: 10px; border-radius: 8px; background: linear-gradient(180deg,#ffffff,#f8fafc); box-shadow: 0 1px 3px rgba(16,24,40,0.04); }
+
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .form-card { margin: 8px; padding: 12px; }
+  .container { width: 95%; padding: 0 10px; }
+}
+.chart-card {
+  margin-top: 18px;
+  padding: 18px;
+  width: 400px;      /* smaller width */
+  height: 400px;     /* smaller height */
+}

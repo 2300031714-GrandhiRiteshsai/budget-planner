@@ -1,0 +1,28 @@
+package com.budgetplannerbackend.controller;
+
+import com.budgetplannerbackend.model.Expense;
+import com.budgetplannerbackend.repository.ExpenseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/expenses")
+@CrossOrigin(origins = "http://localhost:5173")
+public class ExpenseController {
+
+    @Autowired
+    private ExpenseRepository expenseRepository;
+
+    @PostMapping("/add")
+    public Expense addExpense(@RequestBody Expense expense) {
+        // Save expense to DB
+        Expense saved = expenseRepository.save(expense);
+        return saved; // return saved object with generated id
+    }
+
+    @GetMapping("/{userId}")
+    public List<Expense> getExpenses(@PathVariable Long userId) {
+        return expenseRepository.findByUserId(userId);
+    }
+}
