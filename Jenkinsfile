@@ -50,10 +50,7 @@ stages {
         steps {
             echo 'Deploying React frontend as ROOT...'
             dir('frontend') {
-                // Remove existing ROOT safely
                 bat(script: "rmdir /S /Q \"${env.TOMCAT_HOME}\\webapps\\ROOT\"", returnStatus: true)
-
-                // Copy new build into ROOT
                 bat "xcopy /E /I /Y dist \"${env.TOMCAT_HOME}\\webapps\\ROOT\""
             }
         }
@@ -68,6 +65,12 @@ stages {
                 bat 'startup.bat'
             }
         }
+    }
+}
+
+post {
+    always {
+        echo 'Pipeline finished.'
     }
 }
 ```
