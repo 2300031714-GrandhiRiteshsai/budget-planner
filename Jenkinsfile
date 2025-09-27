@@ -50,10 +50,10 @@ stages {
         steps {
             echo 'Deploying React frontend as ROOT...'
             dir('frontend') {
-                // Remove existing ROOT safely without failing
+                // Remove existing ROOT safely
                 bat(script: "rmdir /S /Q \"${env.TOMCAT_HOME}\\webapps\\ROOT\"", returnStatus: true)
 
-                // Copy new build to ROOT
+                // Copy new build into ROOT
                 bat "xcopy /E /I /Y dist \"${env.TOMCAT_HOME}\\webapps\\ROOT\""
             }
         }
@@ -61,25 +61,13 @@ stages {
 
     stage('Restart Tomcat') {
         steps {
-            echo 'Stopping any existing Tomcat...'
+            echo 'Restarting Tomcat...'
             dir("${env.TOMCAT_HOME}\\bin") {
-                bat 'shutdown.bat'
-            }
-            bat 'timeout /t 5 /nobreak'
-
-            echo 'Starting Tomcat on port 9090...'
-            dir("${env.TOMCAT_HOME}\\bin") {
+                bat 'shutdown.bat || echo Tomcat already stopped'
+                bat 'timeout /t 5 /nobreak'
                 bat 'startup.bat'
             }
-
-            echo 'Tomcat restarted successfully!'
         }
-    }
-}
-
-post {
-    always {
-        echo 'Pipeline finished.'
     }
 }
 ```
