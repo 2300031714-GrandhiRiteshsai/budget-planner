@@ -29,8 +29,8 @@ pipeline {
             steps {
                 echo 'Starting backend on port 8081...'
                 dir('backend') {
-                    // Explicitly run Spring Boot backend on port 8081
-                    bat 'start cmd /c "java -jar target\\*.jar --server.port=8081"'
+                    // Start Spring Boot app and keep it detached
+                    bat 'start "Backend" cmd /c "java -jar target\\*.jar --server.port=8081"'
                 }
             }
         }
@@ -49,10 +49,8 @@ pipeline {
             steps {
                 echo 'Starting frontend on port 5173...'
                 dir('frontend') {
-                    // Start React dev server (port 5173)
-                    bat 'start cmd /c "npm start"'
-                    // OR serve production build if you prefer static build
-                    // bat 'npx serve -s build -l 5173'
+                    // Start React app detached
+                    bat 'start "Frontend" cmd /c "npm start"'
                 }
             }
         }
