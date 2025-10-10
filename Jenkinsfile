@@ -27,12 +27,11 @@ pipeline {
 
         stage('Run Backend') {
             steps {
-                echo 'Starting backend on port 8081...'
+                echo 'Starting backend...'
                 dir('backend') {
-                    bat 'start /B java -jar target\\*.jar --server.port=8081 > backend.log 2>&1'
+                    // Run Spring Boot backend in background
+                    bat 'start cmd /c "java -jar target\\*.jar"'
                 }
-                echo 'Waiting for backend to start...'
-                sleep(time: 15, unit: 'SECONDS') // Wait 15 seconds for Spring Boot to start
             }
         }
 
@@ -48,6 +47,20 @@ pipeline {
 
         stage('Run Frontend') {
             steps {
-                echo 'Starting frontend on port 5173...'
+                echo 'Starting frontend...'
                 dir('frontend') {
-                    bat 'start /B npm start >
+                    // Option 1: Start React dev server (for development)
+                    bat 'start cmd /c "npm start"'
+                    // Option 2: Serve production build using "serve" (uncomment if needed)
+                    // bat 'npx serve -s build -l 3000'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+    }
+}
