@@ -29,9 +29,10 @@ pipeline {
             steps {
                 echo 'Starting backend on port 8081...'
                 dir('backend') {
-                    // Start backend in background and log output
                     bat 'start /B java -jar target\\*.jar --server.port=8081 > backend.log 2>&1'
                 }
+                echo 'Waiting for backend to start...'
+                sleep(time: 15, unit: 'SECONDS') // Wait 15 seconds for Spring Boot to start
             }
         }
 
@@ -49,16 +50,4 @@ pipeline {
             steps {
                 echo 'Starting frontend on port 5173...'
                 dir('frontend') {
-                    // Start frontend in background and log output
-                    bat 'start /B npm start > frontend.log 2>&1'
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline finished. Check backend.log and frontend.log for details.'
-        }
-    }
-}
+                    bat 'start /B npm start >
