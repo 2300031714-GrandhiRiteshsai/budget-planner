@@ -29,8 +29,8 @@ pipeline {
             steps {
                 echo 'Starting backend on port 8081...'
                 dir('backend') {
-                    // Start Spring Boot app and keep it detached
-                    bat 'start "Backend" cmd /c "java -jar target\\*.jar --server.port=8081"'
+                    // Start backend in background and log output
+                    bat 'start /B java -jar target\\*.jar --server.port=8081 > backend.log 2>&1'
                 }
             }
         }
@@ -49,8 +49,8 @@ pipeline {
             steps {
                 echo 'Starting frontend on port 5173...'
                 dir('frontend') {
-                    // Start React app detached
-                    bat 'start "Frontend" cmd /c "npm start"'
+                    // Start frontend in background and log output
+                    bat 'start /B npm start > frontend.log 2>&1'
                 }
             }
         }
@@ -58,7 +58,7 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline finished.'
+            echo 'Pipeline finished. Check backend.log and frontend.log for details.'
         }
     }
 }
